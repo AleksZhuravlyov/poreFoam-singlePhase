@@ -95,8 +95,8 @@ int main(int argc, char *argv[])
 	  - fvm::laplacian(muEff, U)
 	);
 
-	volScalarField rAU = 1.0/UEqn().A();
-	surfaceScalarField rAUf = fvc::interpolate(rAU);
+	volScalarField rAU = volScalarField(1.0/UEqn().A());
+	surfaceScalarField rAUf = surfaceScalarField(fvc::interpolate(rAU));
 	setSnGrad<fixedFluxPressureFvPatchScalarField> ( p.boundaryFieldRef(),
 		( phi.boundaryField()  // - fvOptions.relative(mesh.Sf().boundaryField() & U.boundaryField())
 		) / (mesh.magSf().boundaryField()*rAUf.boundaryField())	);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		fvm::laplacian(p) 
 	);
 	pEqn.setReference(pRefCell, pRefValue);
-	pEqn.solve(mesh.solver(p.name() + "Final"));
+	pEqn.solve();
 }
 
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 		fvm::laplacian(1.0e06/((fvc::grad(p)&fvc::grad(p))+0.001*average((fvc::grad(p)&fvc::grad(p)))),p)
 	);
 	pEqn.setReference(pRefCell, pRefValue);
-	pEqn.solve(mesh.solver(p.name() + "Final"));
+	pEqn.solve();
 }
 
 	
@@ -196,8 +196,8 @@ for (int ii=1;ii<10;++ii)
 		fvm::div(rho*phi, U) - fvm::laplacian(muEff, U)
     );
 	scalar rlx=min((ii)/8.0,1.0);
-    volScalarField rAU = 1.0/UEqn().A();
-    surfaceScalarField rAUf = fvc::interpolate(rAU);
+    volScalarField rAU = volScalarField(1.0/UEqn().A());
+    surfaceScalarField rAUf = surfaceScalarField(fvc::interpolate(rAU));
     //~ rAUf = rlx*rAUf+(1.0-rlx)*fvc::interpolate(fvc::average(rAUf));
     U = rAU*(UEqn().H());
     phi = (fvc::interpolate(U) & mesh.Sf());
@@ -206,14 +206,14 @@ for (int ii=1;ii<10;++ii)
 		( phi.boundaryField()  // - fvOptions.relative(mesh.Sf().boundaryField() & U.boundaryField())
 		) / (mesh.magSf().boundaryField()*rAUf.boundaryField())	);
 
-	for(int nonOrth=0; nonOrth<=pimple.nNonOrthCorr(); nonOrth++)
+	while (pimple.correctNonOrthogonal())
     { 
         fvScalarMatrix pEqn( fvm::laplacian(rAUf, p) 
               == rlx*fvc::div(phi) + (1.0-rlx)*fvc::laplacian(rAUf,p) );
         pEqn.setReference(pRefCell, pRefValue);
-		pEqn.solve(mesh.solver(p.select(pimple.finalInnerIter())) );
+		pEqn.solve();
 
-		if (nonOrth == pimple.nNonOrthCorr())
+		if (pimple.finalNonOrthogonalIter())
             phi -= pEqn.flux();
     }
     U -= rAU*(fvc::grad(p));    
@@ -244,8 +244,8 @@ for (int ii=1;ii<10;++ii)
 			fvm::div(rho*phi, U) - fvm::laplacian(muEff, U)
 		);
 
-		volScalarField rAU = 1.0/UEqn().A();
-		surfaceScalarField rAUf = fvc::interpolate(rAU);
+		volScalarField rAU = volScalarField(1.0/UEqn().A());
+		surfaceScalarField rAUf = surfaceScalarField(fvc::interpolate(rAU));
 		U = rAU*(UEqn().H());
 		phi = (fvc::interpolate(U) & mesh.Sf());
 		UEqn.clear();
@@ -254,13 +254,13 @@ for (int ii=1;ii<10;++ii)
 			( phi.boundaryField()  // - fvOptions.relative(mesh.Sf().boundaryField() & U.boundaryField())
 			) / (mesh.magSf().boundaryField()*rAUf.boundaryField())	);
 
-		for(int nonOrth=0; nonOrth<=pimple.nNonOrthCorr(); nonOrth++)
+		while (pimple.correctNonOrthogonal())
 		{
 			fvScalarMatrix pEqn( fvm::laplacian(rAUf, p) == fvc::div(phi) );
 			pEqn.setReference(pRefCell, pRefValue);
-			pEqn.solve( mesh.solver(p.select(pimple.finalInnerIter())) );
+			pEqn.solve();
 
-			if (nonOrth == pimple.nNonOrthCorr())
+			if (pimple.finalNonOrthogonalIter())
 				phi -= pEqn.flux();
 		}
 		U -= rAU*(fvc::grad(p));    

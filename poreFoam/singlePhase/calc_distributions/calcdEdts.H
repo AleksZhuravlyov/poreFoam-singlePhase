@@ -17,7 +17,7 @@ vector rhoPhiUE(0.0,0.0,0.0);
 			clip.boundaryFieldRef()[patchi]==0.0;
 	}
 
-	surfaceScalarField BSurafce=fvcDelta(clip);
+	surfaceScalarField BSurafce = surfaceScalarField(fvcDelta(clip));
 	
 	volVectorField::Boundary& Ubf = U.boundaryFieldRef();
 
@@ -29,7 +29,8 @@ vector rhoPhiUE(0.0,0.0,0.0);
 
 			scalarField clipbp=    BSurafce.boundaryField()[patchi];
 
-			vectorField bGradUp=Ubf[patchi].snGrad();//(Ubf[patchi].patchInternalField()-Ubf[patchi])*boundary[patchi].deltaCoeffs();
+			vectorField bGradUp = vectorField(Ubf[patchi].snGrad());
+			// (Ubf[patchi].patchInternalField()-Ubf[patchi])*boundary[patchi].deltaCoeffs();
 			bGradUp=bGradUp-boundary[patchi].Sf()*(bGradUp&boundary[patchi].Sf())/boundary[patchi].magSf()/boundary[patchi].magSf();
 			viscE-=gSum(          clipbp*muEffbp*bGradUp	*boundary[patchi].magSf() );
 
@@ -45,7 +46,7 @@ vector rhoPhiUE(0.0,0.0,0.0);
 
 
 
-	surfaceVectorField gIBC= fvc::snGrad(U);
+	surfaceVectorField gIBC = surfaceVectorField(fvc::snGrad(U));
 	gIBC=gIBC-mesh.Sf()*(gIBC&mesh.Sf())/mesh.magSf()/mesh.magSf();
 
 	viscE-=gSum( (BSurafce*muEff*gIBC	*mesh.magSf())->internalField() );

@@ -56,16 +56,16 @@ Ali Q Raeini:    a.qaseminejad-raeini09@imperial.ac.uk
 
 		data.t=runTime.value();
 
-		volVectorField gradP=	fvc::grad(p); 
+		volVectorField gradP = volVectorField(fvc::grad(p)); 
 
-		volScalarField Uz=U.component(0);
-		volVectorField gUz=fvc::grad(Uz);
-		volScalarField gradPz=gradP.component(0);
+		volScalarField Uz = volScalarField(U.component(0));
+		volVectorField gUz = volVectorField(fvc::grad(Uz));
+		volScalarField gradPz = volScalarField(gradP.component(0));
 
 
-		volScalarField ViscERate=(fvc::laplacian(muEff,U) & U);
-		volScalarField gradPERate=-gradP & U;
-		volScalarField phiERate=-fvc::div(rho*phi, U) & U ;
+		volScalarField ViscERate = volScalarField(fvc::laplacian(muEff,U) & U);
+		volScalarField gradPERate = volScalarField(-gradP & U);
+		volScalarField phiERate = volScalarField(-fvc::div(rho*phi, U) & U);
 
 
 
@@ -117,7 +117,7 @@ Ali Q Raeini:    a.qaseminejad-raeini09@imperial.ac.uk
 
 
 
-			volScalarField clipVC=clip*VC;
+			volScalarField clipVC = volScalarField(clip*VC);
 			const fvBoundaryMesh& boundary = mesh.boundary();
 
 			forAll(boundary, patchi)

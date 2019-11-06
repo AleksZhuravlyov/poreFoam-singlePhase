@@ -5,8 +5,8 @@
 
 # openfoam installation
 # Change according to your openfoam installation directory
-export WM_NCOMPPROCS=8
-. ~/OpenFOAM/OpenFOAM-v1612+/etc/bashrc  WM_NCOMPPROCS=8
+# export WM_NCOMPPROCS=8
+# . ~/OpenFOAM/OpenFOAM-7/etc/bashrc  WM_NCOMPPROCS=8
 
 
 
@@ -20,7 +20,7 @@ fi
 
 
 
-export myOFBinDir=$myBinDir/porefoam-v1612
+export myOFBinDir=$myBinDir/poreFoam
 
 export PATH=$PATH:$myOFBinDir
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$myOFBinDir

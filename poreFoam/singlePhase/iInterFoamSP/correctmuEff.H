@@ -1,7 +1,7 @@
 
 {
 
-	volVectorField gradP=	fvc::grad(p); 
+	volVectorField gradP = volVectorField(fvc::grad(p)); 
 
     volVectorField::Boundary& Ubf = U.boundaryFieldRef();
 

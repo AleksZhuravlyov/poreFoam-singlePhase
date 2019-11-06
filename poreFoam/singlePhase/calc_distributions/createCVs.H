@@ -47,7 +47,7 @@
 
 
 	
-	volScalarField Cx=mesh.C().component(0);
+	volScalarField Cx = volScalarField(mesh.C().component(0));
 
 
 

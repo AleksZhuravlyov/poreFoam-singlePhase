@@ -1,10 +1,10 @@
 
-	volScalarField rAU = 1.0/UEqn().A();
-	surfaceScalarField rAUf = fvc::interpolate(rAU);
+	volScalarField rAU = volScalarField(1.0/UEqn().A());
+	surfaceScalarField rAUf = surfaceScalarField(fvc::interpolate(rAU));
 
 	U = rAU*(UEqn().H());
   
-	if (pimple.nCorrPISO() <= 1)
+	if (pimple.momentumPredictor())
 	{
 		UEqn.clear();
 	}
@@ -20,7 +20,7 @@ adjustPhi(phi, U, p);
 		( phi.boundaryField()  // - fvOptions.relative(mesh.Sf().boundaryField() & U.boundaryField())
 		) / (mesh.magSf().boundaryField()*rAUf.boundaryField())	);
 
-	for(int nonOrth=0; nonOrth<=pimple.nNonOrthCorr(); nonOrth++)
+	while (pimple.correctNonOrthogonal())
 	{
 		fvScalarMatrix pEqn
 		(
@@ -30,10 +30,10 @@ adjustPhi(phi, U, p);
 		pEqn.setReference(pRefCell, pRefValue);
 
 
-		pEqn.solve
-		(
-			mesh.solver(p.select(pimple.finalInnerIter()))
-		);
+		pEqn.solve();
+		// (
+		// 	mesh.solver(p.select(pimple.finalInnerIter()))
+		// );
 
 		if (pimple.finalNonOrthogonalIter())
 			phi -= pEqn.flux();
