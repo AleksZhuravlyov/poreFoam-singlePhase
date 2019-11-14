@@ -258,6 +258,13 @@ int main(int argc, char *argv[])
 
 	#include "calc_grads.H"
 	Info<< "end" << endl;
+	
+	// Output calculated absolute permeability in perm.txt file
+    std::ofstream oStream;
+    oStream.open("perm.txt");
+    oStream << K[iDir] << std::endl;	
+	oStream.close();
+	
 
 	return 0;
 }
