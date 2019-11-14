@@ -1,4 +1,7 @@
 #!/bin/bash
+pathBack=`pwd`
+pathToDir=`dirname $0`
+cd $pathToDir
 
 if [  -n "$PoreScaleDir" ]; then
 	echo "Info: PoreScaleDir(=$PoreScaleDir) is NOT reset from "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -29,4 +32,6 @@ export poreFoamBashrc="$PoreScaleDir/poreFoam/bashrc"
 
 # two-phase flow solver
 export poreFoamBashrcExtend="$PoreScaleDir/interfoamccf/bashrc"
+
+cd $pathBack
 
