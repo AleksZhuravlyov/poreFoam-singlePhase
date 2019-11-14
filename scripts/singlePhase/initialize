@@ -12,12 +12,12 @@ export SP_MACROS_DIR
 
 setSubKeywordValues()
 {
-	sed -i '/'"$1"'/,/\}/s/'"$2"' .*$/'" $2         $3; "'/' $4
+	sed -i '.orig' '/'"$1"'/,/\}/s/'"$2"' .*$/'" $2         $3; "'/' $4	
 }	
 	
 setBoundaryCondition()
 {
-    sed -i '/'"$1"'/,/\}/s/'"$2"' .*$/'" $2           $3; "'/' $4
+    sed -i '.orig' '/'"$1"'/,/\}/s/'"$2"' .*$/'" $2           $3; "'/' $4
 }
 
 
@@ -26,12 +26,12 @@ setBoundaryCondition()
 
 setValues()
 {
-sed -i 's/'"$1"'/'"$2"'/g' $3
+sed -i '.orig' 's/'"$1"'/'"$2"'/g' $3
 }
 
 setKeywordValues()
 {
-   sed -i 's/^[ \t]*'"$1"'[ \t:].*$/'"     $1   $2; "'/g' $3
+   sed -i '.orig' 's/^[ \t]*'"$1"'[ \t:].*$/'"     $1   $2; "'/g' $3
 }
 
 deleteFromBC()

@@ -107,7 +107,7 @@ solvers
     }
 
 
-    pcFinal
+    pcorrFinal
     {
         solver          PCG;
         preconditioner
